@@ -36,7 +36,7 @@ app.post('/api/notes', (req, res) => {
                 console.log(err);
                 return;
             }
-            console.log("The file was saved!");
+            res.end('{"msg": "success"}');
         });
     });
 });
