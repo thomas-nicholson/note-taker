@@ -8,14 +8,12 @@ const path = require('path');
 
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded());
-
 app.use(express.json());
-
-
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
+
 app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './public/notes.html'));
 })
@@ -40,6 +38,24 @@ app.post('/api/notes', (req, res) => {
         });
     });
 });
+
+app.delete('/api/notes/:id', (req, res) => {
+    fs.readFile("./db/db.json", function(err, json) {
+        var array = JSON.parse(json);
+        var deleteID = req.params.id;
+        array.splice(deleteID, 1);
+        array.forEach((item, index) => {
+            item.id = index;
+        });
+        fs.writeFile("./db/db.json", JSON.stringify(array), function(err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            res.end('{"msg": "success"}');
+        });
+    });
+})
 
 app.listen(PORT, () => {
     console.log(`App listening on PORT: ${PORT}`);
